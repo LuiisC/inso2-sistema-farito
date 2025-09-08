@@ -2,6 +2,7 @@ import React from 'react';
 import logotype from "../components/logo_farito.jpeg";
 import { Outlet, Link } from 'react-router-dom';
 import icon1 from "../components/add2.svg";
+import icon2 from "../components/bar_chart.svg";
 import icon3 from "../components/create.svg";
 import icon4 from "../components/inventory.svg";
 import icon5 from "../components/terminal.svg";
@@ -22,7 +23,6 @@ function Home() {
                     <div className="text-center mb-4">
                         <img src={account} />
                         <p>Nombre Usuario</p>
-                        <p>TECNICO</p>
                     </div>
                     
                     <ul className="nav nav-pills flex-column">
@@ -34,6 +34,9 @@ function Home() {
                         </li>
                         <li className="nav-item">
                             <Link to="/solicitud" className="nav-link text-black"><img src={icon5} /> Solicitud</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link to="/informes" className="nav-link text-black"><img src={icon2} /> Informes</Link>
                         </li>
                         <li className="nav-item">
                             <Link to="/alta" className="nav-link text-black"><img src={icon3} /> Alta</Link>
