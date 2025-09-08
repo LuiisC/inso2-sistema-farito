@@ -1,0 +1,134 @@
+*{
+    box-sizing: border-box;
+}
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+.container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  font-family: sans-serif;
+}
+
+.left-panel, .right-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.left-panel {
+  background-color: #30589F;
+  color: white;
+  position: relative;
+}
+
+.logo img {
+  width: 300px;
+  margin-left: 40px;
+}
+
+.logo h1 {
+  font-size: 3rem;
+  margin-top: 1rem;
+  letter-spacing: 1.2rem;
+}
+
+.footer-left {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+}
+
+.footer-left img {
+  width: 150px;
+}
+
+.right-panel {
+  background-color: #6495ed;
+  color: #000;
+  position: relative;
+}
+
+.form-group {
+  margin: 1rem 0;
+  width: 80%;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.6rem;
+  border-radius: 5px;
+  border: none;
+}
+
+.forgot-password {
+  margin: 0.5rem 0;
+  text-align: right;
+  width: 80%;
+  font-size: 12px;
+}
+
+.login-btn {
+  background-color: #0033cc;
+  color: white;
+  padding: 1rem 5rem;
+  border: none;
+  border-radius: 20px;
+  margin-top: 2rem;
+  cursor: pointer;
+}
+
+.footer-right {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+}
+
+.footer-right img {
+  width: 200px;
+}
+.rectangular{
+  position: relative;
+  bottom: 0;
+}
+.rectangular {
+  background: white;
+  width: 100%;
+  height: 90px; /* puedes ajustar el tamaño */
+  border-top: 1px solid #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed; /* hace que se quede fijo abajo */
+  bottom: 0;
+  left: 0;
+}
+.Izq{
+  width: 200px;
+  position: absolute;
+  left: 50px; /* Se alinea al borde izquierdo del contenedor relativo */
+  top: 80; /* O puedes usar un valor para la posición superior */
+}
+.Der{
+  height: 150px;
+  position: absolute;
+  right: 50px;
+  top: 8;
+}
+.linea-vertical {
+height: 80%; 
+width: 1px; 
+border-left: 2px solid black; 
+}

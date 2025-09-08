@@ -1,34 +1,23 @@
 import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
-//import Login from './pages/Login.jsx';
-import LoginPage from './pages/LoginPage.jsx';
+import { AuthProvider } from './context/AuthContext.jsx'
+import Login from './pages/Login.jsx';
 import Home from './pages/Home.jsx';
-import HomeJefe from './pages/HomeJefe.jsx';
+import RutaProtegida from './components/RutaProtegida.jsx';
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<LoginPage />} />
-
-        <Route 
-          path="/home" 
-          element={ <Home /> }
-        />
-
-        <Route 
-          path='/homejefe'
-          element= {
-            <HomeJefe />
-          }
-        />
-          
+    <Routes>
+      <Route path="/" element={<Home />}>
         <Route path="registro" element={<div>Registro</div> } />
         <Route path="stock" element={<div>Stock</div>} />
         <Route path="solicitud" element={<div>Solicitud</div>} />
         <Route path="informes" element={<div>Informes</div>} />
         <Route path="alta" element={<div>Alta</div>} />
         <Route path="logout" element={<div>Cerrando sesión...</div>} />
-      </Routes>
+      </Route>
+      <Route path="/login" element={<Login />} />
+    </Routes>
   </Router>
     );
 }
