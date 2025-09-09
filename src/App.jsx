@@ -5,6 +5,7 @@ import Home from './pages/Home.jsx';
 import HomeJefe from './pages/HomeJefe.jsx';
 import Registro from './pages/RegistroReparacion.jsx';
 import Layout from './pages/Layout.jsx';
+import LayoutJefe from './pages/LayoutJefe.jsx';
 
 function App() {
   return (
@@ -18,18 +19,18 @@ function App() {
             <Route path="/stock" element={<div>Stock</div>} />
             <Route path="/solicitud" element={<div>Solicitud</div>} />
             <Route path="/alta" element={<div>Alta</div>} />
+            
+        </Route>     
+        
+        <Route element={ <LayoutJefe /> }>
+            <Route path="/homejefe" element={<HomeJefe />} />
+            <Route path="/informes" element={<div>Informes</div>} />
+            <Route path="/solicitudesjefe" element={<div>Solicitudes de Tecnicos</div>} />
+            <Route path="/altatecnicos" element={<div>Alta de técnicos</div>} />
         </Route>
-        
-
-        <Route 
-          path='/homejefe'
-          element= { <HomeJefe /> }>
-            <Route path="informes" element={<div>Informes</div>} />
-        </Route>       
-        
         <Route path="logout" element={<div>Cerrando sesión...</div>} />
       </Routes>
-  </Router>
+    </Router>
     );
 }
 export default App;
