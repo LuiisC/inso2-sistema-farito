@@ -6,7 +6,7 @@ import Header from './Header';
 function Home() {
     return(
         <div>
-           INICIO
+           <h2 className='text-center'>Pagina principal</h2>
         </div>
         
     );

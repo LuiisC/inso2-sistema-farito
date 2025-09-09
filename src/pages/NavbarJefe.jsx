@@ -1,50 +1,42 @@
 import { Outlet, NavLink, Link } from 'react-router-dom';
-import registroicon from "../components/registro-icon.svg"
+import informesicon from "../components/bar_chart.svg"
 import solicitudicon from "../components/solicitud-icon.svg";
-import inventoryicon from "../components/inventory-icon.svg";
-import altaicon from "../components/alta-equipos-icon.svg";
+import altatecnicos from "../components/person-add.svg";
 import logout from "../components/logout.svg";
 import account from "../components/account_box.svg"
 
-const Navbar = () => {
-  return (
-    <div className='container-fluid vh-100'>
+function NavbarJefe() {
+    return(
+        <div className='container-fluid vh-100'>
             <div className='row h-100'>
-                <div className="col-md-2 d-flex flex-column p-3" id="sidebar_farito">
+                <div className="col-3 d-flex flex-column p-3" id="sidebar_farito">
                     <div className="row align-items-start">
                         <img src={account} className='img-fluid mb-2' alt='Usuario'/>
                         <p className='text-center mb-0'>Nombre Usuario</p>
-                        <p className='text-center text-muted'>TECNICO</p>
+                        <p className='text-center text-muted'>JEFE IT</p>
                     </div>
-
-                    <div className='flex-grow-1 d-flex flex-column'>
+                    
+                    <div className="flex-grow-1 d-flex flex-column">
                         <ul className="nav nav-pills flex-column">
                             <li className="nav-item">
-                                <NavLink to="/registro" 
+                                <NavLink to="/solicitudesJefe" 
                                 className={({ isActive }) => `nav-link text-black ${isActive ? 'bg-dark text-white' : ''}`
                                 }>
-                                    <img src={registroicon} className="me-2" alt="" /> Registro
+                                    <img src={solicitudicon} className="me-2" alt="" /> Solicitudes pendientes
                                 </NavLink>
                             </li>
                             <li className="nav-item">
-                                <NavLink to="/stock" 
+                                <NavLink to="/informes" 
                                 className={({ isActive }) => `nav-link text-black ${isActive ? 'bg-dark text-white' : ''}`
                                 }>
-                                    <img src={inventoryicon} className="me-2" alt="" /> Stock
+                                    <img src={informesicon} className="me-2" alt="" /> Informes
                                 </NavLink>
                             </li>
                             <li className="nav-item">
-                                <NavLink to="/solicitud" 
-                                className={({ isActive }) => `nav-link text-black ${isActive ? 'bg-dark text-white' : ''}`
+                                <NavLink to="/altatecnicos" 
+                                className={({isActive}) => `nav-link text-black ${isActive ? 'bg-dark text-white' : ''}`
                                 }>
-                                    <img src={solicitudicon} className="me-2" alt="" /> Solicitud
-                                </NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink to="/alta" 
-                                className={({ isActive }) => `nav-link text-black ${isActive ? 'bg-dark text-white' : ''}`
-                                }>
-                                    <img src={altaicon} className="me-2" alt="" /> Alta
+                                    <img src={altatecnicos} className='me-2' alt='Alta técnicos' /> Alta Técnicos
                                 </NavLink>
                             </li>
                         </ul>
@@ -54,14 +46,14 @@ const Navbar = () => {
                             <img src={logout} className='me-2' alt='Boton cerrar sesion' /> Cerrar sesión
                         </Link>
                     </div>
-                    
                 </div>
+
                 <div className="col p-4" id="contenido-col-derecha">
                     <Outlet />
                 </div>
             </div>
         </div>
-  )
+        
+    );
 }
-
-export default Navbar
+export default NavbarJefe;
