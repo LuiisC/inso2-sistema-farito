@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 
 const Fallas = () => {
@@ -161,3 +162,4 @@ const Fallas = () => {
 };
 
 export default Fallas;
+
