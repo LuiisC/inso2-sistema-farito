@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Reparaciones = () => {
   const [codigo, setCodigo] = useState("");
@@ -7,6 +7,14 @@ const Reparaciones = () => {
   const [descripcion, setDescripcion] = useState("");
   const [fecha, setFecha] = useState("");
   const [mensaje, setMensaje] = useState("");
+  
+  const limpiarFormulario = () => {
+  setCodigo("");
+  setTipo("");
+  setDescripcion("");
+  setFecha("");
+  };
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -21,14 +29,30 @@ const Reparaciones = () => {
     });
 
     setMensaje("✅ Registro guardado con éxito");
+    limpiarFormulario();
 
-    // Limpiar formulario
-    setCodigo("");
-    setTipo("");
-    setDescripcion("");
-    setFecha("");
   };
+  // limpia los campos
+  useEffect(() => {
+    const modal = document.getElementById("modalReparacion");
+  
+    const handleClose = () => {
+      limpiarFormulario();
+      setMensaje("");
+    };
+  
+    modal.addEventListener("hidden.bs.modal", handleClose);
+  
+    return () => {
+      modal.removeEventListener("hidden.bs.modal", handleClose);
+    };
+  }, []);
 
+  const handleInputChange = (setter) => (e) => {
+  setter(e.target.value);
+  if (mensaje) setMensaje(""); // Limpia el mensaje de exito al cargar de nuevo los datos sin salir del modal
+  };
+ 
   return (
     <>
       {/* Modal y formulario*/}
@@ -36,13 +60,13 @@ const Reparaciones = () => {
         className="modal fade"
         id="modalReparacion"
         tabIndex="-1"
-        aria-labelledby="modalFallaLabel"
+        aria-labelledby="modalReparacionLabel"
         aria-hidden="true"
       >
         <div className="modal-dialog modal-md">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="modalFallaLabel">
+              <h5 className="modal-title" id="modalReparacionLabel">
                 Registrar Reparación
               </h5>
               <button
@@ -57,7 +81,7 @@ const Reparaciones = () => {
               {mensaje && (
                 <div className="alert alert-success">{mensaje}</div>
               )}
-              {/* Formulario de registar Falla*/}
+              {/* Formulario de registar Reparacion*/}
 
               <form onSubmit={handleSubmit}>
                 <div className="mb-3 d-flex align-items-end gap-3">
@@ -66,8 +90,10 @@ const Reparaciones = () => {
                      <input
                          type="text"
                          className="form-control custom-input"
+                         placeholder="Ingrese Código"
                          value={codigo}
-                         onChange={(e) => setCodigo(e.target.value)}
+                         //onChange={(e) => setCodigo(e.target.value)}
+                         onChange={handleInputChange(setCodigo)}
                          required
                       />
                   </div>
@@ -77,7 +103,8 @@ const Reparaciones = () => {
                           <select
                              className="form-select"
                              value={tipo}
-                             onChange={(e) => setTipo(e.target.value)}
+                             //onChange={(e) => setTipo(e.target.value)}
+                             onChange={handleInputChange(setTipo)}
                             required
                           >
                             <option value="">Seleccione...</option>
@@ -93,7 +120,8 @@ const Reparaciones = () => {
                     className="form-control"
                     rows="3"
                     value={descripcion}
-                    onChange={(e) => setDescripcion(e.target.value)}
+                    //onChange={(e) => setDescripcion(e.target.value)}
+                    onChange={handleInputChange(setDescripcion)}
                     required
                   ></textarea>
                 </div>
@@ -106,8 +134,10 @@ const Reparaciones = () => {
                       className="form-control"
                       placeholder="dd/mm/aaaa"
                       value={fecha}
-                      onChange={(e) => setFecha(e.target.value)}
+                      //onChange={(e) => setFecha(e.target.value)}
+                      onChange={handleInputChange(setFecha)}
                       pattern="\d{2}/\d{2}/\d{4}"
+                      max={new Date().toISOString().split("T")[0]} //no permite poner fechas futuras
                       required
                     />
                   </div>

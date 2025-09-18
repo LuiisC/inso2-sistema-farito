@@ -1,12 +1,22 @@
 import { Link } from "react-router-dom"
+import React, { useState } from 'react';
 import Fallas from "./Fallas";
 import Reparaciones from "./Reparaciones";
+import RegistrarNuevo from "./RegistrarNuevo";
 
 const RegistroReparacion = () => {
+  const [showModal, setShowModal] = useState(false);
   return (
     <div className="">
         <div className="row justify-content-center p-3">
-          <div className="col-4">
+          <div className="col-auto">
+            <button
+              className="btn btn-light" onClick={() => setShowModal(true)}
+             >
+             Registrar Nuevo
+            </button>
+          </div>
+          <div className="col-auto">
             <button
               className="btn btn-light" 
               data-bs-toggle="modal" 
@@ -15,7 +25,7 @@ const RegistroReparacion = () => {
               Registrar Falla
             </button> 
           </div>
-          <div className="col-4">
+          <div className="col-auto">
             <button
               className="btn btn-light" 
               data-bs-toggle="modal" 
@@ -62,6 +72,7 @@ const RegistroReparacion = () => {
         </div>
         <Fallas />
         <Reparaciones/>
+        <RegistrarNuevo show={showModal} handleClose={() => setShowModal(false)} />
     </div>
     
   )

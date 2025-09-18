@@ -1,10 +1,11 @@
 import { Outlet, NavLink, Link } from 'react-router-dom';
-import registroicon from "../components/registro-icon.svg"
+import registroicon from "../components/registro-icon.svg";
 import solicitudicon from "../components/solicitud-icon.svg";
 import inventoryicon from "../components/inventory-icon.svg";
 import altaicon from "../components/alta-equipos-icon.svg";
 import logout from "../components/logout.svg";
 import account from "../components/account_box.svg"
+import Cerrarsesion from "./Cerrarsesion";
 
 const Navbar = () => {
   return (
@@ -21,38 +22,36 @@ const Navbar = () => {
                         <ul className="nav nav-pills flex-column">
                             <li className="nav-item">
                                 <NavLink to="/registro" 
-                                className={({ isActive }) => `nav-link text-black ${isActive ? 'bg-dark text-white' : ''}`
+                                className={({ isActive }) => `nav-link text-black fs-4 ${isActive ? 'bg-dark text-white' : ''}`
                                 }>
-                                    <img src={registroicon} className="me-2" alt="" /> Registro
+                                    <img src={registroicon} className="me-3" alt="" /> Registro
                                 </NavLink>
                             </li>
                             <li className="nav-item">
                                 <NavLink to="/stock" 
-                                className={({ isActive }) => `nav-link text-black ${isActive ? 'bg-dark text-white' : ''}`
+                                className={({ isActive }) => `nav-link text-black fs-4 ${isActive ? 'bg-dark text-white' : ''}`
                                 }>
-                                    <img src={inventoryicon} className="me-2" alt="" /> Stock
+                                    <img src={inventoryicon} className="me-3" alt="" /> Stock
                                 </NavLink>
                             </li>
                             <li className="nav-item">
                                 <NavLink to="/solicitud" 
-                                className={({ isActive }) => `nav-link text-black ${isActive ? 'bg-dark text-white' : ''}`
+                                className={({ isActive }) => `nav-link text-black fs-4 ${isActive ? 'bg-dark text-white' : ''}`
                                 }>
-                                    <img src={solicitudicon} className="me-2" alt="" /> Solicitud
+                                    <img src={solicitudicon} className="me-3" alt="" /> Solicitud
                                 </NavLink>
                             </li>
                             <li className="nav-item">
                                 <NavLink to="/alta" 
-                                className={({ isActive }) => `nav-link text-black ${isActive ? 'bg-dark text-white' : ''}`
+                                className={({ isActive }) => `nav-link text-black fs-4 ${isActive ? 'bg-dark text-white' : ''}`
                                 }>
-                                    <img src={altaicon} className="me-2" alt="" /> Alta
+                                    <img src={altaicon} className="me-3" alt="" /> Alta
                                 </NavLink>
                             </li>
                         </ul>
                     </div>
                     <div className="mt-auto">
-                        <Link to="/logout" className="nav-link text-danger">
-                            <img src={logout} className='me-2' alt='Boton cerrar sesion' /> Cerrar sesión
-                        </Link>
+                        <Cerrarsesion />
                     </div>
                     
                 </div>
