@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Fallas = () => {
   const [codigo, setCodigo] = useState("");
@@ -8,6 +8,14 @@ const Fallas = () => {
   const [descripcion, setDescripcion] = useState("");
   const [fecha, setFecha] = useState("");
   const [mensaje, setMensaje] = useState("");
+
+  const limpiarFormulario = () => {
+  setCodigo("");
+  setTipo("");
+  setEvento("");
+  setDescripcion("");
+  setFecha("");
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -23,17 +31,30 @@ const Fallas = () => {
     });
 
     setMensaje("✅ Registro guardado con éxito");
-    
-
-    // Limpiar formulario
-    setCodigo("");
-    setTipo("");
-    setEvento("");
-    setDescripcion("");
-    setFecha("");
-
-    
+    limpiarFormulario();
   };
+
+  // limpia los campos del formulario 
+  useEffect(() => {
+    const modal = document.getElementById("modalFalla");
+
+    const handleClose = () => {
+      limpiarFormulario();
+      setMensaje("");
+    };
+
+    modal.addEventListener("hidden.bs.modal", handleClose);
+
+    return () => {
+      modal.removeEventListener("hidden.bs.modal", handleClose);
+    };
+  }, []);
+
+  const handleInputChange = (setter) => (e) => {
+  setter(e.target.value);
+  if (mensaje) setMensaje(""); // Limpia el mensaje de exito al cargar de nuevo los datos sin salir del modal
+  };
+
 
   return (
     <>
@@ -72,8 +93,10 @@ const Fallas = () => {
                      <input
                          type="text"
                          className="form-control custom-input"
+                         placeholder="Ingrese Código" 
                          value={codigo}
-                         onChange={(e) => setCodigo(e.target.value)}
+                         //onChange={(e) => setCodigo(e.target.value)}
+                         onChange={handleInputChange(setCodigo)}
                          required
                       />
                   </div>
@@ -83,7 +106,8 @@ const Fallas = () => {
                           <select
                              className="form-select"
                              value={tipo}
-                             onChange={(e) => setTipo(e.target.value)}
+                             //onChange={(e) => setTipo(e.target.value)}
+                             onChange={handleInputChange(setTipo)}
                             required
                           >
                             <option value="">Seleccione...</option>
@@ -99,7 +123,8 @@ const Fallas = () => {
                     className="form-control"
                     rows="3"
                     value={evento}
-                    onChange={(e) => setEvento(e.target.value)}
+                    //onChange={(e) => setEvento(e.target.value)}
+                    onChange={handleInputChange(setEvento)}
                     required
                   ></textarea>
                 </div>
@@ -110,7 +135,8 @@ const Fallas = () => {
                     className="form-control"
                     rows="3"
                     value={descripcion}
-                    onChange={(e) => setDescripcion(e.target.value)}
+                    //onChange={(e) => setDescripcion(e.target.value)}
+                    onChange={handleInputChange(setDescripcion)}
                     required
                   ></textarea>
                 </div>
@@ -124,7 +150,9 @@ const Fallas = () => {
                       placeholder="dd/mm/aaaa"
                       value={fecha}
                       onChange={(e) => setFecha(e.target.value)}
+                      //onChange={handleInputChange(setFecha)}
                       pattern="\d{2}/\d{2}/\d{4}"
+                      max={new Date().toISOString().split("T")[0]} //no permite poner fechas futuras
                       required
                     />
                   </div>
