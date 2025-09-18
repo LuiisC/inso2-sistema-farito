@@ -6,6 +6,7 @@ import HomeJefe from './pages/HomeJefe.jsx';
 import Registro from './pages/RegistroReparacion.jsx';
 import Layout from './pages/Layout.jsx';
 import LayoutJefe from './pages/LayoutJefe.jsx';
+import HistorialEquipo from './pages/HistorialEquipo.jsx';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="/stock" element={<div>Stock</div>} />
             <Route path="/solicitud" element={<div>Solicitud</div>} />
             <Route path="/alta" element={<div>Alta</div>} />
+            <Route path="/registro/historial" element={<HistorialEquipo />} />
             
         </Route>     
         

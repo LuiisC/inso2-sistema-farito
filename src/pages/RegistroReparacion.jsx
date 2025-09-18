@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom"
 import Fallas from "./Fallas";
 import Reparaciones from "./Reparaciones";
+import HistorialEquipo from "./HistorialEquipo";
 
 const RegistroReparacion = () => {
   return (
@@ -38,7 +39,44 @@ const RegistroReparacion = () => {
           <button className="btn btn-danger">Eliminar</button>
         </div>
 
-        <div className="row">
+      <div className="row">
+        <div>
+          <table className="table table-hover table-bordered">
+            <thead className="table-primary">
+              <tr>
+                <th className="col-2" scope="col">Cod. Equipo</th>
+                <th scope="col">Tipo</th> {/*Aqui iria pc o impresora */}
+                <th scope="col">Estado</th>
+                <th scope="col">Usuario Asignado</th>
+                <th scope="col">Historial</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">P11</th>
+                <td>Computadora</td>
+                <td>En reparación</td>
+                <td>RRHH</td>
+                <td><Link to="historial">Ver historial</Link></td>
+              </tr>
+              <tr>
+                <th scope="row">I3</th>
+                <td>Impresora</td>
+                <td>Reparado</td>
+                <td>Contable</td>
+                <td><Link to={HistorialEquipo}>Ver historial</Link></td>
+              </tr>
+              <tr>
+                <th scope="row">P7</th>
+                <td>Computadora</td>
+                <td>Reparado</td>
+                <td>Soporte técnico</td>
+                <td><Link to={HistorialEquipo}>Ver historial</Link></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+         
           {/* Columna izquierda: Información del equipo */}
           <div className="col-md-6 mb-3">
             <div className="card p-3">
@@ -60,8 +98,8 @@ const RegistroReparacion = () => {
             </div>
           </div>
         </div>
-        <Fallas />
-        <Reparaciones/>
+      <Fallas />
+      <Reparaciones/>
     </div>
     
   )
