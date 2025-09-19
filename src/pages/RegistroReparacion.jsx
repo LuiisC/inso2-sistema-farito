@@ -1,12 +1,46 @@
-import { Link } from "react-router-dom"
-import React, { useState } from 'react';
+import { Link,useNavigate } from "react-router-dom"
+import { useState } from "react";
 import Fallas from "./Fallas";
 import Reparaciones from "./Reparaciones";
 import RegistrarNuevo from "./RegistrarNuevo";
-import HistorialEquipo from "./HistorialEquipo";
+import TablaRegistrados from "./TablaRegistrados";
+import SearchButton from "./SearchButton";
+
 
 const RegistroReparacion = () => {
   const [showModal, setShowModal] = useState(false);
+
+  const [inputValue, setInputValue] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+    // Limpia el error cuando el usuario comienza a escribir
+    if (error) {
+      setError('');
+    }
+  };
+
+   const handleRowClick = (name) => {
+    setInputValue(name);
+    // Limpia cualquier mensaje de error anterior
+    setError('');
+  };
+
+  const handleClick = () => {
+    // Valida que el campo no esté vacío
+    if (inputValue.trim() === '') {
+      //setError('El campo no puede estar vacío.');
+      alert('Debe introducir un codigo de equipo')
+      return; // Detiene la ejecución de la función
+    }
+
+    // Si la validación es exitosa, navega al historial
+    navigate('/registro/historial');
+  };
+
+
   return (
     <div className="">
         <div className="row justify-content-center p-3">
@@ -42,72 +76,21 @@ const RegistroReparacion = () => {
         <div className="d-flex align-items-center gap-2 mb-4">
           <input 
             type="text" 
-            className="form-control w-25" 
+            value={inputValue}
+            className="form-control w-25"
+            onChange={handleInputChange}
             placeholder="Ingrese código del equipo..." 
           />
-          <button className="btn btn-info">Ver historial</button>
+          <SearchButton/>
+          <button className="btn btn-info" onClick={handleClick}>Ver historial</button>
           <button className="btn btn-danger">Eliminar</button>
         </div>
 
       <div className="row">
-        <div>
-          <table className="table table-hover table-bordered">
-            <thead className="table-primary">
-              <tr>
-                <th className="col-2" scope="col">Cod. Equipo</th>
-                <th scope="col">Tipo</th> {/*Aqui iria pc o impresora */}
-                <th scope="col">Estado</th>
-                <th scope="col">Usuario Asignado</th>
-                <th scope="col">Historial</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">P11</th>
-                <td>Computadora</td>
-                <td>En reparación</td>
-                <td>RRHH</td>
-                <td><Link to="historial">Ver historial</Link></td>
-              </tr>
-              <tr>
-                <th scope="row">I3</th>
-                <td>Impresora</td>
-                <td>Reparado</td>
-                <td>Contable</td>
-                <td><Link to={HistorialEquipo}>Ver historial</Link></td>
-              </tr>
-              <tr>
-                <th scope="row">P7</th>
-                <td>Computadora</td>
-                <td>Reparado</td>
-                <td>Soporte técnico</td>
-                <td><Link to={HistorialEquipo}>Ver historial</Link></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-         
-          {/* Columna izquierda: Información del equipo */}
-          <div className="col-md-6 mb-3">
-            <div className="card p-3">
-              <h5>Información del Equipo</h5>
-              <p><strong>Código:</strong> 12345</p>
-              <p><strong>Nombre:</strong> Equipo X</p>
-              <p><strong>Modelo:</strong> ABC123</p>
-              {/* Sale del backend*/}
-            </div>
-          </div>
-
-          {/* Columna derecha: Último problema */}
-          <div className="col-md-6 mb-3">
-            <div className="card p-3">
-              <h5>Último Problema</h5>
-              <p><strong>Fecha:</strong> 01/09/2025</p>
-              <p><strong>Falla:</strong> No enciende</p>
-              <p><strong>Solución:</strong> Reemplazo de fuente</p>
-            </div>
-          </div>
-        </div>
+        {/* Tabla de datos dinamica*/}
+        <TablaRegistrados onRowClick={handleRowClick}/>
+                  
+      </div>
         <Fallas />
         <Reparaciones/>
     </div>
