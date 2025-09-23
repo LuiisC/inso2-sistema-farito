@@ -91,6 +91,7 @@ const RegistroReparacion = () => {
         <TablaRegistrados onRowClick={handleRowClick}/>
                   
       </div>
+        <RegistrarNuevo show={showModal} handleClose={() => setShowModal(false)} />
         <Fallas />
         <Reparaciones/>
     </div>
