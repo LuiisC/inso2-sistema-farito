@@ -8,7 +8,6 @@ function Home() {
         <div>
            <h2 className='text-center'>Pagina principal</h2>
         </div>
-        
     );
 }
 export default Home;

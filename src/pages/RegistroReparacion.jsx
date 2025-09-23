@@ -1,11 +1,11 @@
-import { Link,useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useState } from "react";
 import Fallas from "./Fallas";
 import Reparaciones from "./Reparaciones";
 import RegistrarNuevo from "./RegistrarNuevo";
 import TablaRegistrados from "./TablaRegistrados";
 import SearchButton from "./SearchButton";
-
+import BackButtonHome from "./BackButtonHome";
 
 const RegistroReparacion = () => {
   const [showModal, setShowModal] = useState(false);
@@ -43,6 +43,7 @@ const RegistroReparacion = () => {
 
   return (
     <div className="">
+      < BackButtonHome />
         <div className="row justify-content-center p-3">
           <div className="col-auto">
             <button
