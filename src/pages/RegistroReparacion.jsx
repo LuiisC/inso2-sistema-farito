@@ -10,10 +10,14 @@ import BackButtonHome from "./BackButtonHome";
 const RegistroReparacion = () => {
   const [showModal, setShowModal] = useState(false);
 
+  const [searchQuery, setSearchQuery] = useState('');
   const [inputValue, setInputValue] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  const handleSearch = () => {
+  setSearchQuery(inputValue); // usa el valor del input actual
+};
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
     // Limpia el error cuando el usuario comienza a escribir
@@ -82,14 +86,14 @@ const RegistroReparacion = () => {
             onChange={handleInputChange}
             placeholder="Ingrese código del equipo..." 
           />
-          <SearchButton/>
+          <SearchButton onClick= {()=> setSearchQuery(inputValue)}/>
           <button className="btn btn-info" onClick={handleClick}>Ver historial</button>
           <button className="btn btn-danger">Eliminar</button>
         </div>
 
       <div className="row">
         {/* Tabla de datos dinamica*/}
-        <TablaRegistrados onRowClick={handleRowClick}/>
+        <TablaRegistrados onRowClick={handleRowClick} searchQuery={searchQuery}/>
                   
       </div>
         <RegistrarNuevo show={showModal} handleClose={() => setShowModal(false)} />

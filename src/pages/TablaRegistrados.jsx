@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function TablaRegistrados({onRowClick}) {
+function TablaRegistrados({onRowClick, searchQuery}) {
     // Datos de ejemplo, estos vendríandel backend
   const data = [
     { cod_equipo: 'PC-11', tipo: 'Computadora', estado: 'En reparación' , departamento: 'RRHH'},
@@ -10,6 +10,11 @@ function TablaRegistrados({onRowClick}) {
     { cod_equipo: 'PC-05', tipo: 'Computadora', estado: 'En reparación', departamento: 'Soporte técnico' },
     { cod_equipo: 'PC-09', tipo: 'Computadora', estado: 'Reparado', departamento: 'Contable' }
   ];
+
+  const equiposFiltrados = data.filter(item =>
+    item.cod_equipo.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div>
         <table className="table table-hover table-bordered">
@@ -22,8 +27,8 @@ function TablaRegistrados({onRowClick}) {
                 </tr>
             </thead>
             <tbody>
-                {data.map((row) => (
-                    <tr key={row.cod_equipo} onClick={() => onRowClick(row.cod_equipo)}>
+                {equiposFiltrados.map((row) => (
+                    <tr key={row.cod_equipo} onClick={() => onRowClick(row.cod_equipo)} >
                         <td>{row.cod_equipo}</td>
                         <td>{row.tipo}</td>
                         <td>{row.estado}</td>
