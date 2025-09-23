@@ -13,11 +13,13 @@ const HistorialEquipo = () => {
   ];
   return (
     <>
+    <h2 className="text-center">Historial Equipo</h2>
     <div className="d-flex align-items-center pb-2">
         <Link to="/registro" >
             <img src={Arrow} alt="Regresar" className="p-1 bg-white rounded-2"/>
         </Link>
-        <h4 className='text-white p-2'>HISTORIAL</h4>
+        <h4 className='text-white p-2'>Registro</h4>
+        
     </div>
     <div className="col-md-5 mb-3 ">
             <div className="card p-2">

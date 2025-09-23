@@ -19,6 +19,7 @@ function Home() {
     setNotificaciones(nuevas);
     localStorage.setItem("notificacionesFalla", JSON.stringify(nuevas));
   };
+  //convierte la fecha de aaaa/mm/dd --> dd/mm/aaaa para que se muestre en la pantalla principal 
   const formatearFecha = (fechaString) => {
   if (!fechaString) return '';
   const [year, month, day] = fechaString.split('-');
@@ -58,6 +59,5 @@ function Home() {
     </div>
   );
 }
-
 export default Home;
 
