@@ -18,7 +18,7 @@ const HistorialEquipo = () => {
         <Link to="/registro" >
             <img src={Arrow} alt="Regresar" className="p-1 bg-white rounded-2"/>
         </Link>
-        <h4 className='text-white p-2'>Registro</h4>
+        <h5 className='text-white p-2 m-0'>Registro</h5>
         
     </div>
     <div className="col-md-5 mb-3 ">

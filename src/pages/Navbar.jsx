@@ -4,7 +4,7 @@ import solicitudicon from "../components/solicitud-icon.svg";
 import inventoryicon from "../components/inventory-icon.svg";
 import altaicon from "../components/alta-equipos-icon.svg";
 import logout from "../components/logout.svg";
-import account from "../components/account_box.svg"
+import account from "../components/tecnico_perfil.png"
 import Cerrarsesion from "./Cerrarsesion";
 
 const Navbar = () => {
