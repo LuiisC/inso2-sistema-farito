@@ -1,120 +1,183 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+
+const API = "http://localhost:3000/reparaciones";
+
+function toDDMMYYYY(yyyyMMdd) {
+  if (!yyyyMMdd) return "";
+  const [y, m, d] = yyyyMMdd.split("-");
+  return `${d}/${m}/${y}`;
+}
 
 const Reparaciones = () => {
   const [codigo, setCodigo] = useState("");
   const [tipo, setTipo] = useState("");
+  const [diagnostico, setDiagnostico] = useState("");
   const [descripcion, setDescripcion] = useState("");
+  const [tecnico, setTecnico] = useState("");
   const [fecha, setFecha] = useState("");
-  const [mensaje, setMensaje] = useState("");
-  const [id, setId] = useState(""); 
+  const [mensaje, setMensaje] = useState(""); // muestra exactamente lo del backend
+  const [ok, setOk] = useState(null); // null | true | false
+  const [id, setId] = useState("");
   const [errorDescripcion, setErrorDescripcion] = useState("");
+  const [errorDiagnostico, setErrorDiagnostico] = useState("");
+  const [buscando, setBuscando] = useState(false);
+  const [guardando, setGuardando] = useState(false);
 
   const limpiarFormulario = () => {
     setCodigo("");
     setTipo("");
+    setDiagnostico("");
     setDescripcion("");
+    setTecnico("");
     setFecha("");
     setId("");
     setErrorDescripcion("");
+    setErrorDiagnostico("");
   };
-  // muestra la fecha local
+
+  // fecha máxima hoy (local)
   const today = new Date();
   today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
   const fechaMax = today.toISOString().split("T")[0];
 
-  // busca la falla registrado con ese ID y modifica dicha notificacion 
-  const buscarIdDeFalla = (codigoEquipo) => {
-    const notificaciones = JSON.parse(localStorage.getItem("notificacionesFalla")) || [];
-    const falla = [...notificaciones]
-      .reverse()
-      .find((f) => f.codigo === codigoEquipo && f.estado === "En reparación");
-    return falla ? falla.id : "";
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-   //hacer fetch/axios al backend
-    console.log({
-      codigo,
-      tipo,
-      descripcion,
-      fecha,
-      estado: "reparado",
-    });
-    // indexa a la falla registro
-    const notificaciones = JSON.parse(localStorage.getItem("notificacionesFalla")) || [];
-
-    const indexFalla = notificaciones.findIndex(
-      (f) => f.codigo === codigo && f.estado === "En reparación"
-    );
-    
-    //Valida que el campo de descripcionn de reparacion almenos tenga 20 caracteres
-    if (descripcion.trim().length < 20) {
-    setErrorDescripcion("Este campo debe tener al menos 20 caracteres.");
-    return;
+  // consulta al backend si hay falla abierta por código
+  const fetchFallaAbierta = async (codigoEquipo) => {
+    if (!codigoEquipo) return;
+    setBuscando(true);
+    try {
+      const res = await fetch(
+        `${API}/abierta?codigo=${encodeURIComponent(codigoEquipo)}`,
+        {
+          cache: "no-store",
+        }
+      );
+      const data = await res.json();
+      if (data?.abierta && data.id) {
+        setId(String(data.id));
+        setMensaje("");
+        setOk(null);
+      } else {
+        setId("");
+        setMensaje("No existe una falla abierta para el equipo indicado.");
+        setOk(false);
+      }
+    } catch {
+      setId("");
+      setMensaje("Error consultando el estado del equipo.");
+      setOk(false);
+    } finally {
+      setBuscando(false);
     }
-
-    if (indexFalla === -1) {
-      setMensaje("⚠️ No se encontró una falla pendiente para este código de equipo.");
-      return;
-    }
-    // actualiza la notificacion 
-    notificaciones[indexFalla] = {
-      ...notificaciones[indexFalla],
-      acciones: descripcion,
-      fechaReparacion: fecha,
-      estado: "Reparado",
-    };
-
-    localStorage.setItem("notificacionesFalla", JSON.stringify(notificaciones));
-
-    setMensaje("✅ Registro guardado con éxito");
-    limpiarFormulario();
   };
-  // limpia los campos al cerrar el modal 
-  useEffect(() => {
-    const modal = document.getElementById("modalReparacion");
-
-    const handleClose = () => {
-      limpiarFormulario();
-      setMensaje("");
-    };
-
-    modal.addEventListener("hidden.bs.modal", handleClose);
-
-    return () => {
-      modal.removeEventListener("hidden.bs.modal", handleClose);
-    };
-  }, []);
 
   const handleCodigoChange = (e) => {
     const nuevoCodigo = e.target.value;
     setCodigo(nuevoCodigo);
-
-    const idFalla = buscarIdDeFalla(nuevoCodigo);
-    setId(idFalla); //muestra el ID en el campo correspondiente
-    
-    if (!idFalla) {
-    setMensaje("⚠️ No se encontró una falla pendiente para este código de equipo.");
+    // no bloquees por mensajes previos
+    if (nuevoCodigo.trim().length >= 3) {
+      fetchFallaAbierta(nuevoCodigo.trim());
     } else {
-    setMensaje(""); // Limpia el  mensaje si se encuentra el ID correcto
-    }  
-    
+      setId("");
+      setMensaje("");
+      setOk(null);
+    }
   };
 
   const handleInputChange = (setter) => (e) => {
     const value = e.target.value;
     setter(value);
-    if (mensaje) setMensaje(""); //limpia el mensaje de exito al cargar de nuevo los datos sin salir del modal
-        if (setter === setDescripcion) {
+    // limpiar estado de mensaje para permitir 2do submit
+    if (mensaje) setMensaje("");
 
-    if (value.trim().length < 20) {
-      setErrorDescripcion("Este campo debe tener al menos 20 caracteres.");
-     } else {
-      setErrorDescripcion("");
-     }
-    } 
+    if (setter === setDiagnostico) {
+      if (value.trim().length < 10)
+        setErrorDiagnostico("Debe tener al menos 10 caracteres.");
+      else setErrorDiagnostico("");
+    }
+
+    if (setter === setDescripcion) {
+      if (value.trim().length < 20)
+        setErrorDescripcion("Debe tener al menos 20 caracteres.");
+      else setErrorDescripcion("");
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // validaciones mínimas
+    if (!codigo.trim()) {
+      setMensaje('Código inválido: debe comenzar con "C-" o "I-".');
+      setOk(false);
+      return;
+    }
+    if (!fecha) {
+      setMensaje("Fecha inválida. Formato esperado: dd/MM/yyyy");
+      setOk(false);
+      return;
+    }
+    if (diagnostico.trim().length < 10) {
+      setErrorDiagnostico("Debe tener al menos 10 caracteres.");
+      setOk(false);
+      return;
+    }
+    if (descripcion.trim().length < 20) {
+      setErrorDescripcion("Debe tener al menos 20 caracteres.");
+      setOk(false);
+      return;
+    }
+    if (!id) {
+      setMensaje("No existe una falla abierta para el equipo indicado.");
+      setOk(false);
+      return;
+    }
+
+    setGuardando(true);
+    try {
+      const payload = {
+        codigoEquipo: codigo.trim(),
+        fechaReparacion: toDDMMYYYY(fecha), // dd/MM/yyyy
+        diagnostico: diagnostico.trim(),
+        accionesRealizadas: descripcion.trim(),
+        tecnico: tecnico.trim() || undefined,
+      };
+
+      const res = await fetch(`${API}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        cache: "no-store",
+      });
+
+      const text = await res.text(); // a veces el backend no manda JSON estricto
+      let body;
+      try {
+        body = text ? JSON.parse(text) : {};
+      } catch {
+        body = { message: text };
+      }
+
+      if (!res.ok) {
+        // muestra mensaje del backend tal cual
+        const raw = body?.message ?? text ?? "Error";
+        const msg = Array.isArray(raw) ? raw.join(", ") : String(raw);
+        setMensaje(msg);
+        setOk(false);
+        return;
+      }
+
+      // éxito: también mostramos lo que venga si deseas; si no, mensaje controlado:
+      setMensaje("Registro de reparación guardado con éxito");
+      setOk(true);
+
+      // listo para un 2do submit:
+      limpiarFormulario();
+    } catch {
+      setMensaje("Error de conexión con el servidor");
+      setOk(false);
+    } finally {
+      setGuardando(false);
+    }
   };
 
   return (
@@ -141,24 +204,23 @@ const Reparaciones = () => {
             </div>
 
             <div className="modal-body">
-              {mensaje && (
-               <div
+              {mensaje !== "" && (
+                <div
                   className={`alert ${
-                  mensaje.startsWith("⚠️") ? "alert-danger" : "alert-success"
+                    ok === false ? "alert-danger" : "alert-success"
                   }`}
-                  >
-                 {mensaje}
+                >
+                  {mensaje}
                 </div>
               )}
 
-              {/* Formulario de registar Reparacion*/}
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label className="form-label">ID de Falla</label>
                   <input
                     type="text"
                     className="form-control w-25"
-                    value={id}
+                    value={buscando ? "..." : id}
                     disabled
                   />
                 </div>
@@ -169,9 +231,8 @@ const Reparaciones = () => {
                     <input
                       type="text"
                       className="form-control custom-input"
-                      placeholder="Ingrese Código"
+                      placeholder="C-001 / I-001"
                       value={codigo}
-                      //onChange={(e) => setCodigo(e.target.value)}
                       onChange={handleCodigoChange}
                       required
                     />
@@ -182,9 +243,7 @@ const Reparaciones = () => {
                     <select
                       className="form-select"
                       value={tipo}
-                      //onChange={(e) => setTipo(e.target.value)}
                       onChange={handleInputChange(setTipo)}
-                      required
                     >
                       <option value="">Seleccione...</option>
                       <option value="Computadora">Computadora</option>
@@ -193,16 +252,37 @@ const Reparaciones = () => {
                   </div>
                 </div>
 
+                {/* Diagnóstico */}
                 <div className="mb-3">
-                  <label className="form-label">Descripción de Reparación</label>
+                  <label className="form-label">Diagnóstico</label>
                   <textarea
-                    className={`form-control ${errorDescripcion ? "is-invalid" : ""}`}
+                    className={`form-control ${
+                      errorDiagnostico ? "is-invalid" : ""
+                    }`}
+                    rows="3"
+                    value={diagnostico}
+                    onChange={handleInputChange(setDiagnostico)}
+                    required
+                  />
+                  {errorDiagnostico && (
+                    <div className="invalid-feedback">{errorDiagnostico}</div>
+                  )}
+                </div>
+
+                {/* Descripción / Acciones realizadas */}
+                <div className="mb-3">
+                  <label className="form-label">
+                    Descripción de Reparación (acciones realizadas)
+                  </label>
+                  <textarea
+                    className={`form-control ${
+                      errorDescripcion ? "is-invalid" : ""
+                    }`}
                     rows="3"
                     value={descripcion}
-                    //onChange={(e) => setDescripcion(e.target.value)}
                     onChange={handleInputChange(setDescripcion)}
                     required
-                  ></textarea>
+                  />
                   {errorDescripcion && (
                     <div className="invalid-feedback">{errorDescripcion}</div>
                   )}
@@ -210,12 +290,11 @@ const Reparaciones = () => {
 
                 <div className="mb-3 d-flex align-items-end gap-3">
                   <div>
-                    <label className="form-label">Fecha </label>
+                    <label className="form-label">Fecha</label>
                     <input
                       type="date"
                       className="form-control"
                       value={fecha}
-                      //onChange={(e) => setFecha(e.target.value)}
                       onChange={handleInputChange(setFecha)}
                       max={fechaMax}
                       required
@@ -223,26 +302,31 @@ const Reparaciones = () => {
                   </div>
 
                   <div>
-                    <label className="form-label">Estado</label>
+                    <label className="form-label">Técnico (opcional)</label>
                     <input
                       type="text"
                       className="form-control w-75"
-                      value="Reparado"
-                      disabled
+                      value={tecnico}
+                      onChange={handleInputChange(setTecnico)}
                     />
                   </div>
                 </div>
-                {/*Botones de cancela y guardar */}
+
                 <div className="text-end">
                   <button
                     type="button"
                     className="btn btn-secondary me-2"
                     data-bs-dismiss="modal"
+                    disabled={guardando}
                   >
                     Cancelar
                   </button>
-                  <button type="submit" className="btn btn-primary">
-                    Guardar
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={guardando}
+                  >
+                    {guardando ? "Guardando…" : "Guardar"}
                   </button>
                 </div>
               </form>
