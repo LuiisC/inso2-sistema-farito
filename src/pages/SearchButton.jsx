@@ -1,16 +1,22 @@
-import SearchB from '../components/search_22.svg';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import SearchB from "../components/search_22.svg";
 
-const SearchButton = ({ onClick }) => {
-  
+const SearchButton = ({ code, onSearch }) => {
+  const handleClick = () => {
+    if (!code || !code.trim()) {
+      alert("Debe introducir un código de equipo");
+      return;
+    }
+    onSearch?.();
+  };
+
   return (
-    <button 
-      className='btn btn-outline-secondary bg-white mr-2'
-      onClick={onClick}>
-      <img src={SearchB} alt="Buscar"/>
+    <button
+      className="btn btn-outline-secondary bg-white mr-2"
+      onClick={handleClick}
+    >
+      <img src={SearchB} alt="Buscar" />
     </button>
-  )
-}
+  );
+};
 
-export default SearchButton
+export default SearchButton;
