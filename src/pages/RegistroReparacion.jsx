@@ -9,8 +9,8 @@ import SearchButton from "./SearchButton";
 
 const RegistroReparacion = () => {
   const [showModal, setShowModal] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const [error, setError] = useState("");
+  const [inputValue, setInputValue] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleInputChange = (event) => {
