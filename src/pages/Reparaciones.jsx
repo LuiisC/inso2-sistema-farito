@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const API = "http://localhost:3000/reparaciones";
 
@@ -11,7 +11,6 @@ function toDDMMYYYY(yyyyMMdd) {
 const Reparaciones = () => {
   const [codigo, setCodigo] = useState("");
   const [tipo, setTipo] = useState("");
-  const [diagnostico, setDiagnostico] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [tecnico, setTecnico] = useState("");
   const [fecha, setFecha] = useState("");
@@ -19,22 +18,33 @@ const Reparaciones = () => {
   const [ok, setOk] = useState(null); // null | true | false
   const [id, setId] = useState("");
   const [errorDescripcion, setErrorDescripcion] = useState("");
-  const [errorDiagnostico, setErrorDiagnostico] = useState("");
   const [buscando, setBuscando] = useState(false);
   const [guardando, setGuardando] = useState(false);
 
   const limpiarFormulario = () => {
     setCodigo("");
     setTipo("");
-    setDiagnostico("");
     setDescripcion("");
-    setTecnico("");
     setFecha("");
     setId("");
     setErrorDescripcion("");
-    setErrorDiagnostico("");
+  };
+  useEffect(() => {
+  const modalEl = document.getElementById("modalReparacion");
+  if (!modalEl) return;
+
+  const handleClose = () => {
+    limpiarFormulario();
+    setMensaje("");
+    setOk(null);
   };
 
+  modalEl.addEventListener("hidden.bs.modal", handleClose);
+
+  return () => {
+    modalEl.removeEventListener("hidden.bs.modal", handleClose);
+  };
+}, []);
   // fecha máxima hoy (local)
   const today = new Date();
   today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
@@ -89,12 +99,6 @@ const Reparaciones = () => {
     // limpiar estado de mensaje para permitir 2do submit
     if (mensaje) setMensaje("");
 
-    if (setter === setDiagnostico) {
-      if (value.trim().length < 10)
-        setErrorDiagnostico("Debe tener al menos 10 caracteres.");
-      else setErrorDiagnostico("");
-    }
-
     if (setter === setDescripcion) {
       if (value.trim().length < 20)
         setErrorDescripcion("Debe tener al menos 20 caracteres.");
@@ -116,11 +120,7 @@ const Reparaciones = () => {
       setOk(false);
       return;
     }
-    if (diagnostico.trim().length < 10) {
-      setErrorDiagnostico("Debe tener al menos 10 caracteres.");
-      setOk(false);
-      return;
-    }
+
     if (descripcion.trim().length < 20) {
       setErrorDescripcion("Debe tener al menos 20 caracteres.");
       setOk(false);
@@ -137,9 +137,9 @@ const Reparaciones = () => {
       const payload = {
         codigoEquipo: codigo.trim(),
         fechaReparacion: toDDMMYYYY(fecha), // dd/MM/yyyy
-        diagnostico: diagnostico.trim(),
         accionesRealizadas: descripcion.trim(),
-        tecnico: tecnico.trim() || undefined,
+        //tecnico: tecnico.trim() || undefined,
+        //estado: "Reparado",
       };
 
       const res = await fetch(`${API}`, {
@@ -231,7 +231,7 @@ const Reparaciones = () => {
                     <input
                       type="text"
                       className="form-control custom-input"
-                      placeholder="C-001 / I-001"
+                      placeholder="C-00X/ I-00X"
                       value={codigo}
                       onChange={handleCodigoChange}
                       required
@@ -251,24 +251,6 @@ const Reparaciones = () => {
                     </select>
                   </div>
                 </div>
-
-                {/* Diagnóstico */}
-                <div className="mb-3">
-                  <label className="form-label">Diagnóstico</label>
-                  <textarea
-                    className={`form-control ${
-                      errorDiagnostico ? "is-invalid" : ""
-                    }`}
-                    rows="3"
-                    value={diagnostico}
-                    onChange={handleInputChange(setDiagnostico)}
-                    required
-                  />
-                  {errorDiagnostico && (
-                    <div className="invalid-feedback">{errorDiagnostico}</div>
-                  )}
-                </div>
-
                 {/* Descripción / Acciones realizadas */}
                 <div className="mb-3">
                   <label className="form-label">
@@ -302,12 +284,12 @@ const Reparaciones = () => {
                   </div>
 
                   <div>
-                    <label className="form-label">Técnico (opcional)</label>
+                    <label className="form-label">Estado</label>
                     <input
                       type="text"
                       className="form-control w-75"
-                      value={tecnico}
-                      onChange={handleInputChange(setTecnico)}
+                      value="Reparado"
+                      disabled
                     />
                   </div>
                 </div>

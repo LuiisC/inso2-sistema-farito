@@ -83,7 +83,7 @@ const RegistroReparacion = () => {
       </div>
 
       <div className="row">
-        <TablaRegistrados onRowClick={handleRowClick} />
+        {/*<TablaRegistrados onRowClick={handleRowClick} />*/}
       </div>
 
       <RegistrarNuevo

@@ -73,13 +73,13 @@ const HistorialEquipo = () => {
   return (
     <>
       <h2 className="text-center">Historial Equipo</h2>
-
       <div className="d-flex align-items-center pb-2">
-        <Link to="/registro">
-          <img src={Arrow} alt="Regresar" className="p-1 bg-white rounded-2" />
+        <Link to="/registro" >
+            <img src={Arrow} alt="Regresar" className="p-1 bg-white rounded-2"/>
         </Link>
-        <h4 className="text-white p-2">Registro</h4>
-      </div>
+        <h5 className='text-white p-2 m-0'>Registro</h5>
+        
+    </div>
 
       {mensaje && (
         <div
@@ -172,7 +172,7 @@ const HistorialEquipo = () => {
               <th scope="col">Descripción del problema</th>
               <th scope="col">Fecha de reparación</th>
               <th scope="col">Acciones realizadas</th>
-              <th scope="col">Técnico</th>
+              {/*<th scope="col">Técnico</th>*/}
             </tr>
           </thead>
           <tbody>
@@ -184,7 +184,7 @@ const HistorialEquipo = () => {
                 <td>{r.descripcionProblema || ""}</td>
                 <td>{r.fechaReparacion || ""}</td>
                 <td>{r.accionesRealizadas || ""}</td>
-                <td>{r.tecnico || ""}</td>
+                {/*<td>{r.tecnico || ""}</td>*/}
               </tr>
             ))}
           </tbody>

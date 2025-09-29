@@ -7,7 +7,7 @@ const BackButtonHome = () => {
         <Link to="/home" >
             <img src={Arrow} alt="Regresar" className="p-1 bg-white rounded-2"/>
         </Link>
-        <h4 className='text-white p-2'>Menú principal</h4>
+        <h5 className='text-white p-2 m-0'>Menú principal</h5>
     </div>
   )
 }
