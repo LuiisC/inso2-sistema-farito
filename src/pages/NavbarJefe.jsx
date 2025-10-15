@@ -4,6 +4,7 @@ import solicitudicon from "../components/solicitud-icon.svg";
 import altatecnicos from "../components/person-add.svg";
 import logout from "../components/logout.svg";
 import account from "../components/account_box.svg"
+import Cerrarsesion from './Cerrarsesion';
 
 function NavbarJefe() {
     return(
@@ -42,9 +43,7 @@ function NavbarJefe() {
                         </ul>
                     </div>
                     <div className="mt-auto">
-                        <Link to="/logout" className="nav-link text-danger">
-                            <img src={logout} className='me-2' alt='Boton cerrar sesion' /> Cerrar sesión
-                        </Link>
+                        <Cerrarsesion />
                     </div>
                 </div>
 
