@@ -8,7 +8,6 @@ const SolicitudesForm = () => {
     const [mensaje, setMensaje] = useState("");
     const [marca, setMarca] = useState("");
     const [modelo, setModelo] = useState("");
-    const [justificacion, setJustificacion] = useState("");
     const [fecha, setFecha] = useState("");
     const [errorDescripcion, setErrorDescripcion] = useState("");
     const [errorEvento, setErrorEvento] = useState("");
@@ -65,7 +64,7 @@ const SolicitudesForm = () => {
         };
         try {
             const response = await axios.post(
-                "http://localhost:3000/reparaciones", // Cambia si tu URL es diferente
+                "http://localhost:3000/solicitudcomponente", // Cambia si tu URL es diferente AQUI HAY QUE CAMBIARLO
                 dto
             );
 
@@ -76,7 +75,7 @@ const SolicitudesForm = () => {
             if (error.response?.data?.message) {
                 setMensaje(`❌ ${error.response.data.message}`);
             } else { 
-                setMensaje("❌ Error al registrar la falla");
+                setMensaje("❌ Error al registrar la solicitud");
             }
         }
   };
@@ -107,8 +106,8 @@ const SolicitudesForm = () => {
     }
 
     if (setter === setDescripcion) {
-      if (value.trim().length < 20) {
-        setErrorDescripcion("Este campo debe tener al menos 20 caracteres.");
+      if (value.trim().length < 15) {
+        setErrorDescripcion("Este campo debe tener al menos 15 caracteres.");
       } else {
         setErrorDescripcion("");
       }
@@ -135,7 +134,40 @@ const SolicitudesForm = () => {
               {mensaje && <div className="alert alert-info">{mensaje}</div>}
 
               <form onSubmit={handleSubmit}>
+                {/*Seccion marca */}
+                <div className="pb-4">
+                  <label className="form-label">Marca</label>
+                  <input
+                  type="text"
+                  className={`form-control ${
+                    errorEvento ? "is-invalid" : ""
+                  }`}
+                  value={marca}
+                  placeholder="Marca del componente"
+                  onChange={handleInputChange(setMarca)}
+                  required
+                  />
+                </div>
+
                 <div className="mb-3 d-flex align-items-end gap-3">
+                  {/*Seccion modelo */}
+                  <div>
+                    <label className="form-label">Modelo</label>
+                    <input 
+                      type="text"
+                      className={`form-control ${
+                        errorEvento ? "is-invalid" : ""
+                      }`}
+                      value={modelo}
+                      placeholder="Modelo..."
+                      onChange={handleInputChange(setModelo)}
+                      required
+                    />
+                    {errorEvento && (
+                      <div className="invalid-feedback">{errorEvento}</div>
+                    )}
+                  </div>
+                  {/*Seccion cantidad */}
                   <div>
                     <label className="form-label">Cantidad</label>
                     <input
@@ -151,48 +183,17 @@ const SolicitudesForm = () => {
                       }}
                       required
                     />
-                  </div>
-
-                  <div>
-                    <label className="form-label">Marca</label>
-                    <input
-                    type="text"
-                    className={`form-control ${
-                      errorEvento ? "is-invalid" : ""
-                    }`}
-                    rows="1"
-                    value={marca}
-                    placeholder="Marca del componente"
-                    onChange={handleInputChange(setMarca)}
-                    required
-                    />
-                  </div>
+                  </div>                  
                 </div>
 
-                <div className="mb-1">
-                  <label className="form-label">Modelo</label>
-                  <textarea
-                    className={`form-control ${
-                      errorEvento ? "is-invalid" : ""
-                    }`}
-                    rows="1"
-                    value={modelo}
-                    placeholder="Modelo..."
-                    onChange={handleInputChange(setModelo)}
-                    required
-                  ></textarea>
-                  {errorEvento && (
-                    <div className="invalid-feedback">{errorEvento}</div>
-                  )}
-                </div>
-
+                {/*Seccion Descripcion */}
                 <div className="mb-3">
                   <label className="form-label">Descripción</label>
                   <textarea
                     className={`form-control ${
                       errorDescripcion ? "is-invalid" : ""
                     }`}
-                    rows="2"
+                    rows="3"
                     value={descripcion}
                     placeholder="Descripción del componente"
                     onChange={handleInputChange(setDescripcion)}
@@ -203,22 +204,6 @@ const SolicitudesForm = () => {
                   )}
                 </div>
 
-                <div className="mb-3">
-                  <label className="form-label">Justificación</label>
-                  <textarea
-                    className={`form-control ${
-                      errorDescripcion ? "is-invalid" : ""
-                    }`}
-                    rows="3"
-                    value={justificacion}
-                    placeholder="Motivos por lo que necesita el componente"
-                    onChange={handleInputChange(setJustificacion)}
-                    required
-                  ></textarea>
-                  {errorDescripcion && (
-                    <div className="invalid-feedback">{errorDescripcion}</div>
-                  )}
-                </div>
 
                 <div className="mb-3 d-flex align-items-end gap-3">
                   <div>
@@ -233,15 +218,6 @@ const SolicitudesForm = () => {
                     />
                   </div>
 
-                  <div>
-                    <label className="form-label">Estado de solicitud</label>
-                    <input
-                      type="text"
-                      className="form-control w-75"
-                      value="Pendiente"
-                      disabled
-                    />
-                  </div>
                 </div>
 
                 <div className="text-end">

@@ -4,6 +4,7 @@ import SolicitudesForm from "./SolicitudesForm";
 import BackButtonHome from "./BackButtonHome";
 import RegistrarNuevo from "./RegistrarNuevo";
 import SearchButton from "./SearchButton";
+import TablaSolicitudes from "./TablaSolicitudes";
 
 
 const SolicitudTecnico = () => {
@@ -22,7 +23,7 @@ const SolicitudTecnico = () => {
         setError("");
     };
     
-    const goHistorial = () => {
+    const goSolicitudes = () => {
         const code = inputValue.trim();
         if (!code) {
             alert("Debe introducir un código de equipo");
@@ -47,8 +48,8 @@ const SolicitudTecnico = () => {
             placeholder="Buscar solicitudes..."
             />
         
-            {/* Botón con ícono que usa el mismo handler */}
-            <SearchButton code={inputValue} onSearch={goHistorial} />
+            {/* Botón con ícono que usa el mismo handler se quito el onSearch */}
+            <SearchButton code={inputValue} />
            
             <button className="btn btn-light" data-bs-toggle="modal" data-bs-target="#modalSolicitud">
                 Crear Solicitud
@@ -61,7 +62,7 @@ const SolicitudTecnico = () => {
         
         
         <div className="row">
-            {/*<TablaRegistrados onRowClick={handleRowClick} />*/}
+            <TablaSolicitudes onRowClick={handleRowClick} searchQuery={inputValue}/>
         </div>
         
         <RegistrarNuevo
