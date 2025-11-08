@@ -11,6 +11,8 @@ const Fallas = () => {
   const [id, setId] = useState("");
   const [errorDescripcion, setErrorDescripcion] = useState("");
   const [errorEvento, setErrorEvento] = useState("");
+  const [errorCodigo, setErrorCodigo] = useState("");
+
 
   const limpiarFormulario = () => {
     setCodigo("");
@@ -21,8 +23,9 @@ const Fallas = () => {
     setId("");
     setErrorDescripcion("");
     setErrorEvento("");
+    setErrorCodigo("");
   };
-
+ 
   const today = new Date();
   today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
   const fechaMax = today.toISOString().split("T")[0];
@@ -45,6 +48,13 @@ const Fallas = () => {
     e.preventDefault();
 
     // Validaciones
+    const codigoValido = /^[A-Z]-\d{3}$/;
+    if (!codigoValido.test(codigo.trim())) {
+     setErrorCodigo("Formato inválido.Ej: I-001 o C-002");
+    } else {
+     setErrorCodigo("");
+    }
+
     if (evento.trim().length < 5) {
       setErrorEvento("Este campo debe tener al menos 5 caracteres.");
       return;
@@ -54,7 +64,23 @@ const Fallas = () => {
       setErrorDescripcion("Este campo debe tener al menos 20 caracteres.");
       return;
     }
+    // se crea una notificacion localmente cuando se registra 
+    const nuevaNotificacion = {
+      tipo: tipo,
+      codigo,
+      evento,
+      estado: "En reparación",
+      fecha,
+    };
+    const notificacionesPrevias=
+      JSON.parse(localStorage.getItem("notificacionesFalla")) || [];
 
+    localStorage.setItem(
+    "notificacionesFalla",
+    JSON.stringify([nuevaNotificacion, ...notificacionesPrevias])
+    );
+    window.dispatchEvent(new Event("notificacionesActualizadas"));
+    
     // Formato de fecha requerido por el backend: dd/MM/yyyy
     const fechaFormateada = formatearFecha(fecha);
 
@@ -84,6 +110,7 @@ const Fallas = () => {
 
   useEffect(() => {
     const modal = document.getElementById("modalFalla");
+    if (!modal) return;
     const handleClose = () => {
       limpiarFormulario();
       setMensaje("");
@@ -114,6 +141,26 @@ const Fallas = () => {
         setErrorDescripcion("");
       }
     }
+    if (setter === setCodigo) {
+      const codigoValido = /^[A-Z]-\d{3}$/;
+      if (!codigoValido.test(value.trim())) {
+        setErrorCodigo("Formato inválido.Ej:I-001 o C-002");
+      } else {
+        setErrorCodigo("");
+      }
+    }
+    if (setter === setCodigo || setter === setTipo) {
+      const prefijo = (setter === setCodigo ? value.trim().charAt(0) : codigo.trim().charAt(0));
+      const tipoSeleccionado = (setter === setTipo ? value : tipo);
+      if (
+        (prefijo === "C" && tipoSeleccionado === "Impresora") ||
+        (prefijo === "I" && tipoSeleccionado === "Computadora")
+      ) {
+          setMensaje("⚠️ El código no coincide con el tipo de equipo seleccionado.");
+      } else {
+          setMensaje("");
+      }
+    }
   };
 
   return (
@@ -140,25 +187,38 @@ const Fallas = () => {
             </div>
 
             <div className="modal-body">
-              {mensaje && <div className="alert alert-info">{mensaje}</div>}
-
+              {mensaje && (
+                <div
+                    className={`alert ${
+                      mensaje.includes("❌")
+                        ? "alert-danger" // rojo para errores
+                        : mensaje.includes("⚠️")
+                        ? "alert-warning" // amarillo para advertencias
+                        : "alert-success" // verde para mensajes OK
+                    }`}
+                >
+                 {mensaje}
+                </div>
+              )}
               <form onSubmit={handleSubmit}>
-                <div className="mb-3 d-flex align-items-end gap-3">
+                <div className="mb-3 d-flex align-items-start gap-3">
                   <div>
                     <label className="form-label">Código del equipo</label>
                     <input
                       type="text"
-                      className="form-control custom-input"
-                      placeholder="EJ: C-xxx / I-xxx"
+                      className={`form-control ${errorCodigo ? "is-invalid" : ""}`}
+                      placeholder="EJ: C-00X / I-00X"
                       value={codigo}
-                      onChange={(e) => {
-                        const nuevoCodigo = e.target.value;
-                        setCodigo(nuevoCodigo);
-                        setId(generarIdPorCodigo(nuevoCodigo));
-                        if (mensaje) setMensaje("");
-                      }}
+                      onChange={handleInputChange(setCodigo)}
+                      //onChange={(e) => {
+                      //  const nuevoCodigo = e.target.value;
+                      //  setCodigo(nuevoCodigo);
+                      //  setId(generarIdPorCodigo(nuevoCodigo));
+                      //  if (mensaje) setMensaje("");
+                      //}}
                       required
                     />
+                    {errorCodigo && <div className="invalid-feedback">{errorCodigo}</div>}
                   </div>
 
                   <div>
@@ -201,7 +261,6 @@ const Fallas = () => {
                     }`}
                     rows="3"
                     value={descripcion}
-                    placeholder="Describa el problema con al menos 20 caracteres..."
                     onChange={handleInputChange(setDescripcion)}
                     required
                   ></textarea>

@@ -19,7 +19,7 @@ const RegistrarNuevo = ({ show, handleClose }) => {
   // ---- Campos Impresora ----
   const [modelo, setModelo] = useState("");
   const [tipoImp, setTipoImp] = useState(""); // enum: laser | inyeccion (ajústalo a tus valores)
-  const [departamento, setDepartamento] = useState("");
+  //const [departamento, setDepartamento] = useState("");
   const [marcaimp, setMarcaimp] = useState("");
   const [software, setSoftware] = useState("");
   const [compatibilidad, setCompatibilidad] = useState("");
@@ -58,7 +58,7 @@ const RegistrarNuevo = ({ show, handleClose }) => {
       if (tipoEquipo === "computadora") {
         // Validaciones mínimas
         if (!marca || !procesador || !tipoAlmacenamiento || !ram || !so) {
-          setMensaje("Complete todos los campos de computadora.");
+          setMensaje("❌ Complete todos los campos del formulario.");
           setOk(false);
           return;
         }
@@ -89,7 +89,7 @@ const RegistrarNuevo = ({ show, handleClose }) => {
         }
 
         // Backend devuelve la computadora con "codigo" generado
-        setMensaje(`Computadora registrada. Código: ${data.codigo}`);
+        setMensaje(`✅ Computadora registrada. Código: ${data.codigo}`);
         setOk(true);
         // Si querés cerrar automáticamente el modal:
         // setTimeout(onHide, 1200);
@@ -104,7 +104,7 @@ const RegistrarNuevo = ({ show, handleClose }) => {
           !conectividad
         ) {
           setMensaje(
-            "Complete todos los campos de impresora (departamento es opcional)."
+            "❌ Complete todos los campos del formulario."
           );
           setOk(false);
           return;
@@ -139,7 +139,7 @@ const RegistrarNuevo = ({ show, handleClose }) => {
         }
 
         // Backend devuelve la impresora con "codigo" generado
-        setMensaje(`Impresora registrada. Código: ${data.codigo}`);
+        setMensaje(`✅ Impresora registrada. Código: ${data.codigo}`);
         setOk(true);
         // Si querés cerrar automáticamente el modal:
         // setTimeout(onHide, 1200);
@@ -273,7 +273,7 @@ const RegistrarNuevo = ({ show, handleClose }) => {
           {tipoEquipo === "impresora" && (
             <>
               <div className="row mt-3">
-                <Form.Group className="col-md-6">
+                <Form.Group className="mt-3">
                   <Form.Label>Modelo</Form.Label>
                   <Form.Control
                     placeholder="Ej: LaserJet 1020"
@@ -281,7 +281,9 @@ const RegistrarNuevo = ({ show, handleClose }) => {
                     onChange={(e) => setModelo(e.target.value)}
                   />
                 </Form.Group>
+              </div>
 
+              <div className="row mt-3">
                 <Form.Group className="col-md-6">
                   <Form.Label>Marca</Form.Label>
                   <Form.Select
@@ -298,9 +300,7 @@ const RegistrarNuevo = ({ show, handleClose }) => {
                     <option value="Otra">Otra</option>
                   </Form.Select>
                 </Form.Group>
-              </div>
 
-              <div className="row mt-3">
                 <Form.Group className="col-md-6">
                   <Form.Label>Tipo de Impresora</Form.Label>
                   <Form.Select
@@ -317,15 +317,6 @@ const RegistrarNuevo = ({ show, handleClose }) => {
                     <option value="Continua">Continua</option>
                     <option value="Otro">Otro</option>
                   </Form.Select>
-                </Form.Group>
-
-                <Form.Group className="col-md-6">
-                  <Form.Label>Departamento (opcional)</Form.Label>
-                  <Form.Control
-                    placeholder="Ej: Contabilidad"
-                    value={departamento}
-                    onChange={(e) => setDepartamento(e.target.value)}
-                  />
                 </Form.Group>
               </div>
 
