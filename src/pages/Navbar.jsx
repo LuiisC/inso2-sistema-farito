@@ -14,7 +14,7 @@ const Navbar = () => {
                 <div className="col-md-2 d-flex flex-column p-3" id="sidebar_farito">
                     <div className="row align-items-start">
                         <img src={account} className='img-fluid mb-2' alt='Usuario'/>
-                        <p className='text-center mb-0'>Nombre Usuario</p>
+                        <p className='text-center mb-0'>Cristian</p>
                         <p className='text-center text-muted'>TECNICO</p>
                     </div>
 

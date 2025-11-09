@@ -44,8 +44,9 @@ const RegistrarNuevo = ({ show, handleClose }) => {
   };
 
   const onHide = () => {
-    limpiar();
     handleClose();
+    limpiar();
+    
   };
 
   const handleRegistrar = async () => {
@@ -114,7 +115,6 @@ const RegistrarNuevo = ({ show, handleClose }) => {
         const payload = {
           modelo,
           tipo: tipoImp, // 'laser' | 'inyeccion' (ajústalo a tu enum real)
-          departamento: departamento || undefined,
           marca: marcaimp,
           software_o_driver: software,
           compatibilidad,
@@ -330,21 +330,13 @@ const RegistrarNuevo = ({ show, handleClose }) => {
               </Form.Group>
 
               <div className="row mt-3">
-                <Form.Group className="col-md-6">
+                 <Form.Group className="col-md-6">
                   <Form.Label>Compatibilidad</Form.Label>
-                  <Form.Select
+                  <Form.Control
+                    placeholder="Ej: Windows, macOS, Linux..."
                     value={compatibilidad}
                     onChange={(e) => setCompatibilidad(e.target.value)}
-                  >
-                    <option value="" disabled>
-                      Seleccione
-                    </option>
-                    <option value="Windows 10">Windows 10</option>
-                    <option value="Windows 11">Windows 11</option>
-                    <option value="macOS">macOS</option>
-                    <option value="Linux">Linux</option>
-                    <option value="otro">otro</option>
-                  </Form.Select>
+                  />
                 </Form.Group>
 
                 <Form.Group className="col-md-6">

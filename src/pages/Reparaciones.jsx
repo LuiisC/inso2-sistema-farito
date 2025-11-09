@@ -50,6 +50,10 @@ const Reparaciones = () => {
   today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
   const fechaMax = today.toISOString().split("T")[0];
 
+  const fechaMinDate = new Date(today);
+  fechaMinDate.setDate(today.getDate() - 4);
+  const fechaMin = fechaMinDate.toISOString().split("T")[0];
+
   // consulta al backend si hay falla abierta por código
   const fetchFallaAbierta = async (codigoEquipo) => {
     if (!codigoEquipo) return;
@@ -308,18 +312,9 @@ const Reparaciones = () => {
                       className="form-control"
                       value={fecha}
                       onChange={handleInputChange(setFecha)}
+                      min={fechaMin}
                       max={fechaMax}
                       required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="form-label">Estado</label>
-                    <input
-                      type="text"
-                      className="form-control w-75"
-                      value="Reparado"
-                      disabled
                     />
                   </div>
                 </div>

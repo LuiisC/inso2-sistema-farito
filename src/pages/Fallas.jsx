@@ -30,6 +30,10 @@ const Fallas = () => {
   today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
   const fechaMax = today.toISOString().split("T")[0];
 
+  const fechaMinDate = new Date(today);
+  fechaMinDate.setDate(today.getDate() - 4);
+  const fechaMin = fechaMinDate.toISOString().split("T")[0];
+
   const generarIdPorCodigo = (codigo) => {
     const notificacionesAnteriores =
       JSON.parse(localStorage.getItem("notificacionesFalla")) || [];
@@ -64,23 +68,7 @@ const Fallas = () => {
       setErrorDescripcion("Este campo debe tener al menos 20 caracteres.");
       return;
     }
-    // se crea una notificacion localmente cuando se registra 
-    const nuevaNotificacion = {
-      tipo: tipo,
-      codigo,
-      evento,
-      estado: "En reparación",
-      fecha,
-    };
-    const notificacionesPrevias=
-      JSON.parse(localStorage.getItem("notificacionesFalla")) || [];
-
-    localStorage.setItem(
-    "notificacionesFalla",
-    JSON.stringify([nuevaNotificacion, ...notificacionesPrevias])
-    );
-    window.dispatchEvent(new Event("notificacionesActualizadas"));
-    
+      
     // Formato de fecha requerido por el backend: dd/MM/yyyy
     const fechaFormateada = formatearFecha(fecha);
 
@@ -95,6 +83,22 @@ const Fallas = () => {
         "http://localhost:3000/reparaciones", // Cambia si tu URL es diferente
         dto
       );
+      // se crea una notificacion localmente cuando se registra 
+      const nuevaNotificacion = {
+      tipo: tipo,
+      codigo,
+      evento,
+      estado: "En reparación",
+      fecha,
+      };
+      const notificacionesPrevias=
+        JSON.parse(localStorage.getItem("notificacionesFalla")) || [];
+
+      localStorage.setItem(
+      "notificacionesFalla",
+      JSON.stringify([nuevaNotificacion, ...notificacionesPrevias])
+      );
+      window.dispatchEvent(new Event("notificacionesActualizadas"));
 
       setMensaje("✅ Registro guardado con éxito");
       limpiarFormulario();
@@ -277,18 +281,9 @@ const Fallas = () => {
                       className="form-control"
                       value={fecha}
                       onChange={handleInputChange(setFecha)}
+                      min={fechaMin}
                       max={fechaMax}
                       required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="form-label">Estado</label>
-                    <input
-                      type="text"
-                      className="form-control w-75"
-                      value="En reparación"
-                      disabled
                     />
                   </div>
                 </div>

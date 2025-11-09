@@ -24,6 +24,10 @@ const SolicitudesForm = ({ show, handleClose, onSolicitudCreada }) => {
   today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
   const fechaMax = today.toISOString().split("T")[0];
 
+  const fechaMinDate = new Date(today);
+  fechaMinDate.setDate(today.getDate() - 0);
+  const fechaMin = fechaMinDate.toISOString().split("T")[0];
+
   const formatearFecha = (fechaISO) => {
     const [year, month, day] = fechaISO.split("-");
     return `${day}/${month}/${year}`;
@@ -144,16 +148,19 @@ const SolicitudesForm = ({ show, handleClose, onSolicitudCreada }) => {
                 )}
               </div>
 
-              <div className="mb-3">
-                <label className="form-label">Fecha de solicitud</label>
-                <input
-                  type="date"
-                  className="form-control"
-                  value={fecha}
-                  onChange={handleInputChange(setFecha)}
-                  max={fechaMax}
-                  required
-                />
+              <div className="mb-3 d-flex align-items-end gap-3">
+                <div>
+                  <label className="form-label">Fecha de solicitud</label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    value={fecha}
+                    onChange={handleInputChange(setFecha)}
+                    min={fechaMin}
+                    max={fechaMax}
+                    required
+                  />
+                </div>
               </div>
 
               <div className="text-end">
