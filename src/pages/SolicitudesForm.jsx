@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 
-const SolicitudesForm = ({ onSolicitudCreada }) => {
+const SolicitudesForm = ({ show, handleClose, onSolicitudCreada }) => {
   const [marca, setMarca] = useState("");
   const [modelo, setModelo] = useState("");
   const [cantidad, setCantidad] = useState("");
@@ -26,19 +26,17 @@ const SolicitudesForm = ({ onSolicitudCreada }) => {
 
   const formatearFecha = (fechaISO) => {
     const [year, month, day] = fechaISO.split("-");
-    return `${day}/${month}/${year}`; // Formato dd/MM/yyyy
+    return `${day}/${month}/${year}`;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validación de descripción
     if (descripcion.trim().length < 10) {
       setErrorDescripcion("La descripción debe tener al menos 10 caracteres.");
       return;
     }
 
-    // Preparar DTO
     const dto = {
       marca,
       modelo,
@@ -48,21 +46,20 @@ const SolicitudesForm = ({ onSolicitudCreada }) => {
     };
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/solicitudes", // URL de tu servicio
-        dto
-      );
-
+      const response = await axios.post("http://localhost:3000/solicitudes", dto);
       setMensaje("✅ Solicitud creada con éxito");
+
       limpiarFormulario();
 
-      // Opcional: actualizar lista de solicitudes en el padre
       if (onSolicitudCreada) onSolicitudCreada(response.data);
+
+      // Cierra el modal automáticamente después de 1 segundo
+      setTimeout(() => {
+        handleClose();
+      }, 3000);
     } catch (error) {
       console.error(error);
-      setMensaje(
-        error.response?.data?.message || "❌ Error al registrar la solicitud"
-      );
+      setMensaje(error.response?.data?.message || "❌ Error al registrar la solicitud");
     }
   };
 
@@ -73,49 +70,32 @@ const SolicitudesForm = ({ onSolicitudCreada }) => {
 
     if (setter === setDescripcion) {
       if (value.trim().length < 10) {
-        setErrorDescripcion(
-          "La descripción debe tener al menos 10 caracteres."
-        );
+        setErrorDescripcion("La descripción debe tener al menos 10 caracteres.");
       } else {
         setErrorDescripcion("");
       }
     }
   };
 
-  useEffect(() => {
-    const modal = document.getElementById("modalSolicitud");
-    const handleClose = () => limpiarFormulario();
-    modal.addEventListener("hidden.bs.modal", handleClose);
-    return () => modal.removeEventListener("hidden.bs.modal", handleClose);
-  }, []);
+  if (!show) return null; // 🔥 no renderiza nada si no está visible
 
   return (
     <div
-      className="modal fade"
-      id="modalSolicitud"
+      className="modal fade show d-block"
       tabIndex="-1"
-      aria-labelledby="modalSolicitudLabel"
-      aria-hidden="true"
+      style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
     >
       <div className="modal-dialog modal-md">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title" id="modalSolicitudLabel">
-              Registrar solicitud
-            </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Cerrar"
-            ></button>
+            <h5 className="modal-title">Registrar solicitud</h5>
+            <button type="button" className="btn-close" onClick={handleClose}></button>
           </div>
 
           <div className="modal-body">
             {mensaje && <div className="alert alert-info">{mensaje}</div>}
 
             <form onSubmit={handleSubmit}>
-              {/* Marca */}
               <div className="mb-3">
                 <label className="form-label">Marca</label>
                 <input
@@ -127,7 +107,6 @@ const SolicitudesForm = ({ onSolicitudCreada }) => {
                 />
               </div>
 
-              {/* Modelo */}
               <div className="mb-3">
                 <label className="form-label">Modelo</label>
                 <input
@@ -139,7 +118,6 @@ const SolicitudesForm = ({ onSolicitudCreada }) => {
                 />
               </div>
 
-              {/* Cantidad */}
               <div className="mb-3">
                 <label className="form-label">Cantidad</label>
                 <input
@@ -152,13 +130,10 @@ const SolicitudesForm = ({ onSolicitudCreada }) => {
                 />
               </div>
 
-              {/* Descripción */}
               <div className="mb-3">
                 <label className="form-label">Descripción</label>
                 <textarea
-                  className={`form-control ${
-                    errorDescripcion ? "is-invalid" : ""
-                  }`}
+                  className={`form-control ${errorDescripcion ? "is-invalid" : ""}`}
                   rows="3"
                   value={descripcion}
                   onChange={handleInputChange(setDescripcion)}
@@ -169,7 +144,6 @@ const SolicitudesForm = ({ onSolicitudCreada }) => {
                 )}
               </div>
 
-              {/* Fecha */}
               <div className="mb-3">
                 <label className="form-label">Fecha de solicitud</label>
                 <input
@@ -183,11 +157,7 @@ const SolicitudesForm = ({ onSolicitudCreada }) => {
               </div>
 
               <div className="text-end">
-                <button
-                  type="button"
-                  className="btn btn-secondary me-2"
-                  data-bs-dismiss="modal"
-                >
+                <button type="button" className="btn btn-secondary me-2" onClick={handleClose}>
                   Cancelar
                 </button>
                 <button type="submit" className="btn btn-primary">
