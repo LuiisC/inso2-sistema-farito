@@ -56,11 +56,12 @@ const SolicitudesForm = ({ show, handleClose, onSolicitudCreada }) => {
       limpiarFormulario();
 
       if (onSolicitudCreada) onSolicitudCreada(response.data);
+      
 
       // Cierra el modal automáticamente después de 1 segundo
       setTimeout(() => {
         handleClose();
-      }, 3000);
+      }, 2000);
     } catch (error) {
       console.error(error);
       setMensaje(error.response?.data?.message || "❌ Error al registrar la solicitud");
