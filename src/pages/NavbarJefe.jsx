@@ -3,13 +3,14 @@ import informesicon from "../components/bar_chart.svg"
 import solicitudicon from "../components/solicitud-icon.svg";
 import altatecnicos from "../components/person-add.svg";
 import logout from "../components/logout.svg";
-import account from "../components/account_box.svg"
+import account from "../components/jefe_perfil.png"
+import Cerrarsesion from './Cerrarsesion';
 
 function NavbarJefe() {
     return(
         <div className='container-fluid vh-100'>
             <div className='row h-100'>
-                <div className="col-3 d-flex flex-column p-3" id="sidebar_farito">
+                <div className="col-md-2 d-flex flex-column p-6" id="sidebar_farito">
                     <div className="row align-items-start">
                         <img src={account} className='img-fluid mb-2' alt='Usuario'/>
                         <p className='text-center mb-0'>Nombre Usuario</p>
@@ -42,9 +43,7 @@ function NavbarJefe() {
                         </ul>
                     </div>
                     <div className="mt-auto">
-                        <Link to="/logout" className="nav-link text-danger">
-                            <img src={logout} className='me-2' alt='Boton cerrar sesion' /> Cerrar sesión
-                        </Link>
+                        <Cerrarsesion />
                     </div>
                 </div>
 

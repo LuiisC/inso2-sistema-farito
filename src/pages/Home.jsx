@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 function Home() {
   const [notificaciones, setNotificaciones] = useState([]);
-  const nombre = "tecnico2";
+  const nombre = "Cristian";
 
   useEffect(() => {
     // Obtener notificaciones desde localStorage al cargar la página
@@ -60,4 +60,3 @@ function Home() {
   );
 }
 export default Home;
-

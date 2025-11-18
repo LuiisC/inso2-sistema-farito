@@ -50,6 +50,10 @@ const Reparaciones = () => {
   today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
   const fechaMax = today.toISOString().split("T")[0];
 
+  const fechaMinDate = new Date(today);
+  fechaMinDate.setDate(today.getDate() - 4);
+  const fechaMin = fechaMinDate.toISOString().split("T")[0];
+
   // consulta al backend si hay falla abierta por código
   const fetchFallaAbierta = async (codigoEquipo) => {
     if (!codigoEquipo) return;
@@ -68,7 +72,7 @@ const Reparaciones = () => {
         setOk(null);
       } else {
         setId("");
-        setMensaje("No existe una falla abierta para el equipo indicado.");
+        setMensaje(" ❌ No existe una falla abierta para el equipo indicado.");
         setOk(false);
       }
     } catch {
@@ -103,6 +107,18 @@ const Reparaciones = () => {
       if (value.trim().length < 20)
         setErrorDescripcion("Debe tener al menos 20 caracteres.");
       else setErrorDescripcion("");
+    }
+    if (setter === setCodigo || setter === setTipo) {
+      const prefijo = (setter === setCodigo ? value.trim().charAt(0) : codigo.trim().charAt(0));
+      const tipoSeleccionado = (setter === setTipo ? value : tipo);
+      if (
+        (prefijo === "C" && tipoSeleccionado === "Impresora") ||
+        (prefijo === "I" && tipoSeleccionado === "Computadora")
+      ) {
+          setMensaje("⚠️ El código no coincide con el tipo de equipo seleccionado.");
+      } else {
+          setMensaje("");
+      }
     }
   };
 
@@ -167,9 +183,23 @@ const Reparaciones = () => {
       }
 
       // éxito: también mostramos lo que venga si deseas; si no, mensaje controlado:
-      setMensaje("Registro de reparación guardado con éxito");
+      setMensaje(" ✅ Registro guardado con éxito");
       setOk(true);
 
+      // cambie el estado y la fecha de reparacion localmente 
+      const notificaciones = JSON.parse(localStorage.getItem("notificacionesFalla")) || [];
+        const notificacionesActualizadas = notificaciones.map((n) => {
+          if (n.codigo === codigo && n.estado === "En reparación") {
+            return { 
+              ...n, 
+              estado: "Reparado",      
+              fecha: fecha             
+            };
+          }
+          return n;
+      });
+      localStorage.setItem("notificacionesFalla", JSON.stringify(notificacionesActualizadas));
+      window.dispatchEvent(new Event("notificacionesActualizadas"));
       // listo para un 2do submit:
       limpiarFormulario();
     } catch {
@@ -204,11 +234,15 @@ const Reparaciones = () => {
             </div>
 
             <div className="modal-body">
-              {mensaje !== "" && (
+              {mensaje && (
                 <div
-                  className={`alert ${
-                    ok === false ? "alert-danger" : "alert-success"
-                  }`}
+                    className={`alert ${
+                      mensaje.includes("❌")
+                        ? "alert-danger" // rojo para errores
+                        : mensaje.includes("⚠️")
+                        ? "alert-warning" // amarillo para advertencias
+                        : "alert-success" // verde para mensajes OK
+                    }`}
                 >
                   {mensaje}
                 </div>
@@ -278,18 +312,9 @@ const Reparaciones = () => {
                       className="form-control"
                       value={fecha}
                       onChange={handleInputChange(setFecha)}
+                      min={fechaMin}
                       max={fechaMax}
                       required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="form-label">Estado</label>
-                    <input
-                      type="text"
-                      className="form-control w-75"
-                      value="Reparado"
-                      disabled
                     />
                   </div>
                 </div>

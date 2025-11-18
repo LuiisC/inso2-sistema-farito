@@ -11,23 +11,18 @@ const LoginPage = () => {
 
   const navigate = useNavigate();
 
-      // Simulación de login
-    const mockUsuarios = [
-      { nombre: 'tecnico1', rol: 'TECNICO', token: 'token-tecnico' },
-      { nombre: 'tecnico2', rol: 'TECNICO', token: 'tecnico2' },
-      { nombre: 'jefe1', rol: 'JEFE', token: 'token-jefe' }
-    ];
-    
-  //const usuarioValido = mockUsuarios.find(u => u.nombre === usuario);
-  const indexUser = mockUsuarios.findIndex(u => u.nombre === usuario);
-  const usuarioValido = mockUsuarios[indexUser];
+  // Simulación de login
+  const mockUsuarios = [
+    { nombre: 'tecnico1', rol: 'TECNICO', token: 'token-tecnico' },
+    { nombre: 'Cristian', rol: 'TECNICO', token: 'tecnico2' },
+    { nombre: 'jefe1', rol: 'JEFE', token: 'token-jefe' }
+  ];
 
-  //const usuarioValido = 'tecnico';
-  //const contrasenaValida = '1234';
+  // se busca el usuario 
+  const usuarioValido = mockUsuarios.find(u => u.nombre === usuario);
 
   const handleLogin = () => {
-    
-
+    // Si la cuenta está bloqueada, no se permite seguir intentando
     if (bloqueado) return;
 
     // Validar campos vacíos
@@ -36,18 +31,32 @@ const LoginPage = () => {
       return;
     }
 
-    //Validar credenciales
-    if (usuario === usuarioValido.nombre && contrasena === usuarioValido.token) {
-      if (usuarioValido.rol === 'TECNICO') {
-        console.log("Entro correctamente como tecnico")
+    // Validar si el usuario existe
+    if (usuarioValido) {
+      // Validar credenciales sensibles a mayúsculas o minúsculas
+      if (contrasena === usuarioValido.token) {
+        // Login correcto según el rol
         setError('');
-        navigate('/home');
-      }
-      else if (usuarioValido.rol === 'JEFE') {
-        setError('');
-        navigate('/homejefe');
+        if (usuarioValido.rol === 'TECNICO') {
+          console.log("Entró correctamente como técnico");
+          navigate('/home');
+        } else if (usuarioValido.rol === 'JEFE') {
+          navigate('/homejefe');
+        }
+      } else {
+        // Contraseña incorrecta
+        const nuevosIntentos = intentos - 1;
+        setIntentos(nuevosIntentos);
+
+        if (nuevosIntentos <= 0) {
+          setBloqueado(true);
+          setError('Cuenta bloqueada por demasiados intentos fallidos ❌');
+        } else {
+          setError(`Contraseña incorrecta. Te quedan ${nuevosIntentos} intento(s).`);
+        }
       }
     } else {
+      // Usuario no encontrado
       const nuevosIntentos = intentos - 1;
       setIntentos(nuevosIntentos);
 
@@ -72,6 +81,7 @@ const LoginPage = () => {
       <div className={styles["right-panel"]}>
         <h2>¡Bienvenidos de vuelta!</h2>
 
+        {/* Campo Usuario */}
         <div className={styles["form-group"]}>
           <label>Usuario</label>
           <input
@@ -83,6 +93,7 @@ const LoginPage = () => {
           />
         </div>
 
+        {/* Campo Contraseña */}
         <div className={styles["form-group"]}>
           <label>Contraseña</label>
           <input
@@ -98,13 +109,20 @@ const LoginPage = () => {
           <a href="#">¿Has olvidado tu contraseña?</a>
         </div>
 
+        {/* Mensaje de error */}
         {error && <div className={styles["error-message"]}>{error}</div>}
 
-        <button className={styles["login-btn"]} onClick={handleLogin} disabled={bloqueado}>
+        {/* Botón de login */}
+        <button
+          className={styles["login-btn"]}
+          onClick={handleLogin}
+          disabled={bloqueado}
+        >
           Iniciar sesión
         </button>
       </div>
 
+      {/* Pie con logotipos */}
       <div className={styles.rectangular}>
         <div className={styles["linea-vertical"]}></div>
         <img className={styles.Izq} src="/logo rentas.png" alt="Rentas" />
